@@ -887,7 +887,7 @@ const AddMilestoneModalComponent: React.FC<AddMilestoneModalProps> = ({
                                         value={newMilestoneTitle}
                                         onChange={(e) => setNewMilestoneTitle(e.target.value)}
                                         placeholder="e.g., Outline Chapter 1"
-                                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 placeholder-gray-400"
+                                        className="w-full p-3 border text-gray-900 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 placeholder-gray-400"
                                         required
                                     />
                                 </div>
