@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
+
 
 // --- Types (Keep outside components) ---
 type GoalStatus = 'not-started' | 'in-progress' | 'completed';
@@ -238,9 +239,11 @@ const Navbar: React.FC<NavbarProps> = React.memo(({ currentUser }) => (
                     <span className="hidden md:inline">{currentUser.name}</span>
                     <div className="relative">
                         <div className="w-8 h-8 rounded-full overflow-hidden">
-                            <img
+                            <Image
                                 src={currentUser.avatar}
                                 alt={currentUser.name}
+                                width={32}
+                                height={32}
                                 className="w-full h-full object-cover"
                             />
                         </div>
@@ -416,17 +419,23 @@ const WelcomeHero: React.FC<WelcomeHeroProps> = React.memo(({ onAddGoalClick, on
                                         ease: "easeInOut"
                                     }}
                                 />
-                                <motion.img
-                                    src="/globe.svg"
-                                    alt="Goal Map"
-                                    className="relative w-full h-full object-contain filter drop-shadow-lg"
-                                    animate={{ rotate: 360 }}
-                                    transition={{
-                                        repeat: Infinity,
-                                        duration: 60,
-                                        ease: "linear"
-                                    }}
-                                />
+                                <motion.div className="relative w-full h-full">
+                                    <Image
+                                        src="/globe.svg"
+                                        alt="Goal Map"
+                                        fill
+                                        className="object-contain filter drop-shadow-lg"
+                                    />
+                                    <motion.div
+                                        className="absolute inset-0"
+                                        animate={{ rotate: 360 }}
+                                        transition={{
+                                            repeat: Infinity,
+                                            duration: 60,
+                                            ease: "linear"
+                                        }}
+                                    />
+                                </motion.div>
 
                                 {/* Orbit elements - using fixed positions for hydration */}
                                 {[0, 1, 2].map((index) => {
@@ -859,7 +868,7 @@ const AddMilestoneModalComponent: React.FC<AddMilestoneModalProps> = ({
                         onClick={(e: React.MouseEvent) => e.stopPropagation()}
                     >
                         <div className={`bg-gradient-to-r ${goalColor} py-4 px-6 text-white`}>
-                            <h2 className="text-xl font-bold">Add Milestone for "{goalTitle}"</h2>
+                            <h2 className="text-xl font-bold">Add Milestone for &quot;{goalTitle}&quot;</h2>
                             <p className="text-white/80 text-sm">Break down your goal into actionable steps</p>
                         </div>
 
@@ -1332,7 +1341,7 @@ const TutorialModal: React.FC<TutorialModalProps> = ({ isOpen, onClose }) => {
                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                                     </button>
                                 ) : (
-                                    <button /* ... Finish Button ... */
+                                    <button
                                         onClick={onClose}
                                         className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors duration-200 text-sm font-medium" >
                                         Let's Go!
@@ -1366,7 +1375,13 @@ const WelcomeMessage: React.FC<WelcomeMessageProps> = ({ isOpen, onDismiss, onSh
             >
                 {/* ... content remains the same, just uses props for actions ... */}
                 <div className="flex">
-                    <div className="flex-shrink-0 mr-3">/* Icon */ <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center"><svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></div></div>
+                    <div className="flex-shrink-0 mr-3">
+                        <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                    </div>
                     <div>
                         <h3 className="font-medium text-gray-800 text-sm">Welcome to Goal Odyssey!</h3>
                         <p className="text-sm text-gray-600 mt-1">Ready to start your adventure? Create a goal or take the tour.</p>
@@ -1528,11 +1543,10 @@ const GoalTrackerComponent = () => {
         setGoals(prevGoals => {
             const updatedGoals = prevGoals.map(goal => {
                 if (goal.id === goalId) {
-                    let wasCompleted = false;
+                    // Track if status is changing to completed
                     let isNowCompleted = false;
                     const updatedMilestones = goal.milestones.map(milestone => {
                         if (milestone.id === milestoneId) {
-                            wasCompleted = milestone.status === 'completed';
                             isNowCompleted = status === 'completed';
                             return {
                                 ...milestone,
