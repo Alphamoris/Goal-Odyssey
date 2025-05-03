@@ -901,7 +901,7 @@ const AddMilestoneModalComponent: React.FC<AddMilestoneModalProps> = ({
                                         value={newMilestoneDescription}
                                         onChange={(e) => setNewMilestoneDescription(e.target.value)}
                                         placeholder="Add details about this milestone..."
-                                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none placeholder-gray-400"
+                                        className="w-full p-3 text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none placeholder-gray-400"
                                         rows={3}
                                     />
                                 </div>
